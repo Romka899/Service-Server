@@ -55,37 +55,37 @@ export class AuthService {
     });
   }
 
-  async login(username: string, password: string): Promise<{ message: string, user: Omit<User, 'password'> }> {
+  async login(username: string, password: string): Promise<{ message: string, user: any }> {
     if (!username || !password) {
-      throw new HttpException(
-        'Имя пользователя и пароль обязательны', 
-        HttpStatus.BAD_REQUEST
-      );
+      throw new Error('Имя пользователя и пароль обязательны');
     }
-
-    const users = await new Promise<User[]>((resolve, reject) => {
-      this.db.find().make((filter) => {
-        filter.where('username', username);
-        filter.where('password', password);
-        filter.callback((err, users) => {
-          if (err) reject(err);
-          else resolve(users);
+  
+    try {
+      const users = await new Promise<any[]>((resolve, reject) => {
+        this.db.find().make((filter) => {
+          filter.where('username', username);
+          filter.where('password', password);
+          filter.callback((err, users) => {
+            if (err) return reject(err);
+            resolve(users);
+          });
         });
       });
-    });
-
-    if (users.length === 0) {
-      throw new HttpException(
-        'Неверные учетные данные', 
-        HttpStatus.UNAUTHORIZED
-      );
-    }
-
-    const { password: _, ...userWithoutPassword } = users[0];
+  
+      //console.log('Результат поиска:', users);
+  
+      if (users.length === 0) {
+        throw new HttpException('Неверные учетные данные', HttpStatus.UNAUTHORIZED);
+      }
     
-    return { 
-      message: 'Авторизация успешна',
-      user: userWithoutPassword
-    };
+      return { 
+        message: 'Авторизация успешна',
+        user: users[0]
+      };
+      
+    } catch (error) {
+      console.error('Ошибка авторизации:', error);
+      throw new Error('Ошибка сервера при авторизации');
+    }
   }
 }

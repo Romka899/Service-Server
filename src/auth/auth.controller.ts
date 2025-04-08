@@ -14,4 +14,9 @@ export class AuthController {
       throw error; 
     }
   }
+
+  @Post('autorisation')
+  async login(@Body() body: { username: string; password: string }) {
+    return this.authService.login(body.username, body.password);
+  }
 }
