@@ -1,6 +1,6 @@
 export interface BannerData {
     placement: string;
-    app: string;
+    app: 'app1' | 'app2';
     hideable: boolean;
     link: string;
     period: string;
