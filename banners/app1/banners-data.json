@@ -12,5 +12,59 @@
     "imageCount": 0,
     "username": "1",
     "timestamp": "2025-04-17T06:24:54.291Z"
+  },
+  {
+    "placement": "",
+    "app": "app1",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "1",
+    "id": "23f66d68f3430051fdb6b11c8ad63ebf",
+    "imageNames": [],
+    "timestamp": "2025-04-22T05:39:52.472Z",
+    "imageCount": 0
+  },
+  {
+    "placement": "",
+    "app": "app1",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "1",
+    "id": "9398f7bd240f0b9a7b81ffed36f4919b",
+    "imageNames": [
+      "9398f7bd240f0b9a7b81ffed36f4919b-1745312413095.png",
+      "9398f7bd240f0b9a7b81ffed36f4919b-1745312413095.jpeg"
+    ],
+    "timestamp": "2025-04-22T09:00:13.095Z",
+    "imageCount": 2
+  },
+  {
+    "placement": "middle",
+    "app": "app1",
+    "hideable": "false",
+    "link": "",
+    "period": "1month",
+    "impressions": "10000",
+    "userImpressions": "5",
+    "showTime": "all",
+    "geoTargeting": "europe",
+    "username": "gnofmknfmnl",
+    "id": "c1f2bfcedb18fa229a0177d5327af56f",
+    "imageNames": [
+      "c1f2bfcedb18fa229a0177d5327af56f-1745314591631.png",
+      "c1f2bfcedb18fa229a0177d5327af56f-1745314591632.jpeg"
+    ],
+    "timestamp": "2025-04-22T09:36:31.631Z",
+    "imageCount": 2
   }
 ]

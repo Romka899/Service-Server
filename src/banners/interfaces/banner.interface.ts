@@ -1,4 +1,5 @@
 export interface BannerData {
+    id?: string;
     placement: string;
     app: 'app1' | 'app2';
     hideable: boolean;
@@ -8,7 +9,8 @@ export interface BannerData {
     userImpressions: string;
     showTime: string;
     geoTargeting: string;
-    imageCount: number;
+    imageCount?: number;
+    imageNames?: string[];
     username: string;
-    timestamp: string;
+    timestamp?: string;
 }
