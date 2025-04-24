@@ -1,5 +1,7 @@
-import { Controller, Post, Body } from '@nestjs/common';
+import { Controller, Post, Body, Req, HttpException } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { Request } from 'express';
+import { LoginResponse } from './auth.types'; 
 
 @Controller('api') 
 export class AuthController {
@@ -7,16 +9,45 @@ export class AuthController {
 
   @Post('register')
   async register(@Body() body: { username: string; password: string }) {
+    console.log('Получен запрос на регистрацию:', body);
     try {
       const result = await this.authService.register(body.username, body.password);
+      console.log('Регистрация успешна');
       return { message: result };
     } catch (error) {
-      throw error; 
+      console.error('Ошибка регистрации:', error);
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException(error.message || 'Ошибка сервера', 500);
     }
   }
 
-  @Post('autorisation')
-  async login(@Body() body: { username: string; password: string }) {
-    return this.authService.login(body.username, body.password);
+  @Post('authorization')
+  async login(
+    @Body() body: { username: string; password: string },
+    @Req() req: Request
+  ): Promise<LoginResponse> {
+    try {
+      return await this.authService.login(body.username, body.password, req);
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Ошибка сервера', 500);
+    }
+  }
+
+  @Post('logout')
+  async logout(@Req() req: Request) {
+    try {
+      const result = await this.authService.logout(req);
+      return { message: result };
+    } catch (error) {
+      if (error instanceof HttpException) {
+        throw error;
+      }
+      throw new HttpException('Ошибка сервера', 500);
+    }
   }
 }

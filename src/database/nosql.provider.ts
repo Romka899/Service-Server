@@ -18,6 +18,7 @@ export const nosqlDbProvider: Provider = {
 
     db.on('load', () => console.log('База данных успешно загружена.'));
     db.on('error', (err) => console.error('Ошибка базы данных:', err));
+    db.on('insert', (doc) => console.log('Документ вставлен:', doc));
 
     return db;
   },

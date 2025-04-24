@@ -13,4 +13,5 @@ export interface BannerData {
     imageNames?: string[];
     username: string;
     timestamp?: string;
+    userId: string;
 }
