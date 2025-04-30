@@ -1,8 +1,8 @@
-import { Module, MiddlewareConsumer, RequestMethod } from '@nestjs/common';
+import { Module, MiddlewareConsumer, RequestMethod, NestModule } from '@nestjs/common';
 import { AuthModule } from './auth/auth.module';
 import { DatabaseModule } from './database/database.module';
 import { BannersModule } from './banners/banners.module';
-import { SessionMiddleware } from './session.middleware';
+import { AuthMiddleware } from './session.middleware';
 
 @Module({
   imports: [
@@ -11,6 +11,10 @@ import { SessionMiddleware } from './session.middleware';
     BannersModule
   ],
 })
-export class AppModule {
-
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes('api/save-banner');
+  }
 }

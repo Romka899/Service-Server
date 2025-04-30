@@ -65,5 +65,37 @@
     ],
     "timestamp": "2025-04-22T06:59:40.214Z",
     "imageCount": 2
+  },
+  {
+    "placement": "",
+    "app": "app2",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "76",
+    "id": "711c3e9dd0127f5ca68cf78ff95dbc3c",
+    "imageNames": [],
+    "timestamp": "2025-04-30T08:47:34.154Z",
+    "imageCount": 0
+  },
+  {
+    "placement": "",
+    "app": "app2",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "76",
+    "id": "42235408c8e04cbbcdc5385b2a90e590",
+    "imageNames": [],
+    "timestamp": "2025-04-30T08:47:46.530Z",
+    "imageCount": 0
   }
 ]

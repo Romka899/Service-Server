@@ -3,80 +3,69 @@ import { NOSQL_DB_PROVIDER } from '../database/nosql.provider';
 import * as NoSQL from 'nosql';
 import { Request } from 'express';
 import * as crypto from 'crypto';
-import { LoginResponse } from './auth.types';
 import { rejects } from 'assert';
-import { filter } from 'rxjs';
 import { resolve } from 'path';
-
+import { SessionUser, AuthResponse } from './interfaces/auth.interface';
 
 
 declare module 'express-session' {
   interface SessionData {
-    user?: {
-      id: string;
-      username: string;
-      role: string;
-      loggedInAt: Date;
-    };
+    user?: SessionUser;
   }
 }
+
 
 @Injectable()
 export class AuthService {
   constructor(
     @Inject(NOSQL_DB_PROVIDER) private readonly db: any,
   ) {}
+  
 
-  private async findUser(username: string): Promise<LoginResponse[]> {
-    return new Promise<LoginResponse[]>((resolve, reject) => {
-      this.db.find().make((filter) => {
-        filter.where('username', username);
-        filter.callback((err, users) => {
-          if (err) reject(err);
-          else resolve(users);
-        });
-      });
-    });
-  }
-
-  async register(username: string, password: string): Promise<string> {
-    if (!username || !password) {
-      throw new Error('Имя пользователя и пароль обязательны');
-    }
-
+  async findUser(username: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.db.find().make((filter) => {
-        filter.where('username', username);
-        filter.callback((err, users) => {
-          if (err) {
-            console.error('Ошибка при поиске пользователя:', err);
-            return reject(new Error('Ошибка сервера'));
-          }
-
-          if (users.length > 0) {
-            return reject(new Error('Пользователь с таким именем уже существует'));
-          }
-
-          const newUser = { username, password, role: 'Зарегистрированный пользователь' };
-          
-          this.db.insert(newUser);
-          
-          console.log('Пользователь успешно зарегистрирован:', newUser);
-          resolve('Пользователь успешно зарегистрирован');
+        this.db.find().make(filter => {
+            filter.where('username', username);
+            filter.callback((err, users) => {
+                if (err) reject(err);
+                resolve(users[0] || null);
+            });
         });
-      });
     });
-  }
+}
 
-  async login(username: string, password: string, req: Request): Promise<LoginResponse> {
+async register(username: string, password: string): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+    const newUser = { 
+      username, 
+      password: hashedPassword,
+      role: 'user',
+      id: crypto.randomBytes(16).toString('hex'),
+      createdAt: new Date()
+    };
+
+    this.db.insert(newUser, (err) => {
+      if (err) {
+        console.error('Ошибка вставки:', err);
+        return reject(new Error('DB write error'));
+      }
+      console.log('Успешная запись:', newUser);
+      resolve(JSON.stringify(newUser));
+    });
+  });
+}
+
+  async login(username: string, password: string, req: Request): Promise<AuthResponse> {
     if (!username || !password) {
       throw new HttpException('Имя пользователя и пароль обязательны', HttpStatus.BAD_REQUEST);
     }
     
+    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
     const users = await new Promise<any[]>((resolve, reject) =>{
       this.db.find().make((filter) =>{
         filter.where('username', username);
-        filter.where('password', password);
+        filter.where('password', hashedPassword);
         filter.callback((err, users) => {
           if (err) return reject(err);
           resolve(users);
@@ -105,26 +94,24 @@ export class AuthService {
     
       const user = users[0];
       const SessionUser = {
-        id: user.id || crypto.randomBytes(16).toString('hex'),
+        id: user.id,
         username: user.username,
-        role: user.role || 'user',
+        role: user.role,
         loggedInAt: new Date()
       };
 
       req.session.user = SessionUser;
 
-      await new Promise<void>((resolve, reject) =>{
-        req.session.save((err) =>{
-          if (err) reject(new HttpException('Ошибка сессии', HttpStatus.INTERNAL_SERVER_ERROR));
-          else resolve();
-        });
-      });
-
-      return { 
-        message: 'Авторизация успешна',
-        user: SessionUser
-      };  
-    } 
+      await new Promise<void>((resolve) => req.session.save(resolve));
+      
+      return {
+          status: 'success',
+          message: 'Авторизация успешна',
+          data: {
+            user: SessionUser
+        }
+      };
+    }
 
     async logout(req: Request): Promise<string> {
       return new Promise((resolve, reject)=>{
@@ -144,4 +131,7 @@ export class AuthService {
       }
       return req.session.user;
     }
+
+
+    
   }

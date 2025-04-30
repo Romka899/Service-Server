@@ -51,7 +51,7 @@ export class BannersService {
     }
 
     async saveBanner(
-        bannerData: Omit<BannerData, 'id' | 'imageNames' | 'timestamp' | 'imageCount' | 'userId'>,
+        bannerData: Omit<BannerData, 'id' | 'imageNames' | 'timestamp' | 'imageCount' | 'userId' /*| 'companyId'*/>,
         images: Express.Multer.File[],
         req: Request
     ): Promise<BannerData> {
@@ -73,6 +73,7 @@ export class BannersService {
                 ...bannerData,
                 id: bannerId,
                 userId: user.id,
+                companyId: bannerData.companyId,
                 imageNames,
                 timestamp,
                 imageCount: imageNames.length
@@ -106,19 +107,19 @@ export class BannersService {
             const app1Path = this.getAppFilePath('app1');
             const app2Path = this.getAppFilePath('app2');
             
-            const banners: BannerData[] = [];
+            const userBanners: BannerData[] = [];
             
             if (fs.existsSync(app1Path)) {
                 const app1Banners = JSON.parse(fs.readFileSync(app1Path, 'utf8'));
-                banners.push(...app1Banners.filter(b => b.userId === user.id));
+                userBanners.push(...app1Banners.filter(b => b.userId === user.id));
             }
             
             if (fs.existsSync(app2Path)) {
                 const app2Banners = JSON.parse(fs.readFileSync(app2Path, 'utf8'));
-                banners.push(...app2Banners.filter(b => b.userId === user.id));
+                userBanners.push(...app2Banners.filter(b => b.userId === user.id));
             }
 
-            return banners;
+            return userBanners;
         } catch (error) {
             throw new HttpException('Ошибка получения баннеров', HttpStatus.INTERNAL_SERVER_ERROR);
         }
