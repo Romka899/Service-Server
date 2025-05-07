@@ -36,81 +36,74 @@ export class AuthService {
 
 async register(username: string, password: string): Promise<string> {
   return new Promise((resolve, reject) => {
+    if (!username || !password) {
+      return reject(new Error('Имя пользователя и пароль обязательны'));
+    }
+
     const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-    const newUser = { 
-      username, 
+    const newUser = {
+      username,
       password: hashedPassword,
       role: 'user',
       id: crypto.randomBytes(16).toString('hex'),
-      createdAt: new Date()
+      createdAt: new Date().toISOString()
     };
 
     this.db.insert(newUser, (err) => {
-      if (err) {
-        console.error('Ошибка вставки:', err);
-        return reject(new Error('DB write error'));
-      }
-      console.log('Успешная запись:', newUser);
+      if (err) return reject(new Error('Ошибка базы данных'));
       resolve(JSON.stringify(newUser));
     });
   });
 }
 
-  async login(username: string, password: string, req: Request): Promise<AuthResponse> {
-    if (!username || !password) {
-      throw new HttpException('Имя пользователя и пароль обязательны', HttpStatus.BAD_REQUEST);
-    }
-    
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-    const users = await new Promise<any[]>((resolve, reject) =>{
-      this.db.find().make((filter) =>{
-        filter.where('username', username);
-        filter.where('password', hashedPassword);
-        filter.callback((err, users) => {
-          if (err) return reject(err);
-          resolve(users);
-        });
+async login(username: string, password: string, req: Request): Promise<AuthResponse> {
+  const users = await new Promise<any[]>((resolve, reject) => {
+    this.db.find().make((filter) => {
+      filter.where('username', username);
+      filter.where('password', crypto.createHash('sha256').update(password).digest('hex'));
+      filter.callback((err, users) => {
+        if (err) return reject(err);
+        resolve(users);
       });
     });
+  });
 
-    /*
-    try {
-      const users = await new Promise<any[]>((resolve, reject) => {
-        this.db.find().make((filter) => {
+  if (users.length === 0) {
+    throw new HttpException('Неверные учетные данные', HttpStatus.UNAUTHORIZED);
+  }
+
+  const user = users[0];
+  
+  req.session.user = {
+    id: user.id, 
+    username: user.username,
+    role: user.role,
+    loggedInAt: new Date()
+  };
+
+  await new Promise<void>((resolve) => req.session.save(resolve));
+  
+  return {
+    status: 'success',
+    data: {
+      user: req.session.user
+    }
+  };
+}
+
+    async validateUser(username: string, password: string): Promise<any> {
+      const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+      
+      return new Promise((resolve, reject) => {
+        this.db.find().make(filter => {
           filter.where('username', username);
-          filter.where('password', password);
+          filter.where('password', hashedPassword);
           filter.callback((err, users) => {
             if (err) return reject(err);
-            resolve(users);
+            resolve(users[0] || null);
           });
         });
       });
-  */
-      //console.log('Результат поиска:', users);
-  
-      if (users.length === 0) {
-        throw new HttpException('Неверные учетные данные', HttpStatus.UNAUTHORIZED);
-      }
-    
-      const user = users[0];
-      const SessionUser = {
-        id: user.id,
-        username: user.username,
-        role: user.role,
-        loggedInAt: new Date()
-      };
-
-      req.session.user = SessionUser;
-
-      await new Promise<void>((resolve) => req.session.save(resolve));
-      
-      return {
-          status: 'success',
-          message: 'Авторизация успешна',
-          data: {
-            user: SessionUser
-        }
-      };
     }
 
     async logout(req: Request): Promise<string> {
@@ -131,7 +124,4 @@ async register(username: string, password: string): Promise<string> {
       }
       return req.session.user;
     }
-
-
-    
   }

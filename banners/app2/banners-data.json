@@ -97,5 +97,23 @@
     "imageNames": [],
     "timestamp": "2025-04-30T08:47:46.530Z",
     "imageCount": 0
+  },
+  {
+    "companyId": "4",
+    "companyName": "OZON",
+    "placement": "",
+    "app": "app2",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "76",
+    "id": "430b0b0377e57c53e7337df66cdb1ba0",
+    "imageNames": [],
+    "timestamp": "2025-05-07T04:09:21.813Z",
+    "imageCount": 0
   }
 ]

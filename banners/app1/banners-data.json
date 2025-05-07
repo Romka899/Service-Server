@@ -146,5 +146,101 @@
     "imageNames": [],
     "timestamp": "2025-04-30T08:42:51.366Z",
     "imageCount": 0
+  },
+  {
+    "companyId": "4",
+    "companyName": "OZON",
+    "placement": "",
+    "app": "app1",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "76",
+    "id": "81b772e101266655544aa492fdd24f12",
+    "imageNames": [],
+    "timestamp": "2025-05-07T03:33:44.516Z",
+    "imageCount": 0
+  },
+  {
+    "companyId": "1",
+    "companyName": "Своя Компания",
+    "placement": "",
+    "app": "app1",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "76",
+    "id": "f6b419af2fc5783b6a8424cec5d220f5",
+    "imageNames": [],
+    "timestamp": "2025-05-07T03:35:07.354Z",
+    "imageCount": 0
+  },
+  {
+    "companyId": "4",
+    "companyName": "OZON",
+    "placement": "",
+    "app": "app1",
+    "hideable": "false",
+    "link": "https://www.figma.com/design/kVvepQXwGmvGR8bTUOkJEV/%D0%A2%D0%A1%D0%9F?node-id=6-487&t=3ZUaGQvDARXpxzCc-0",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "76",
+    "id": "0aa4095a75f840f088e67dd2fe8e15f7",
+    "imageNames": [
+      "0aa4095a75f840f088e67dd2fe8e15f7-1746592901058.png"
+    ],
+    "timestamp": "2025-05-07T04:41:41.058Z",
+    "imageCount": 1
+  },
+  {
+    "companyId": "4",
+    "companyName": "OZON",
+    "placement": "top",
+    "app": "app1",
+    "hideable": "false",
+    "link": "",
+    "period": "2weeks",
+    "impressions": "1000",
+    "userImpressions": "5",
+    "showTime": "night",
+    "geoTargeting": "europe",
+    "username": "76",
+    "id": "f8ca6982d490add16d7afda06e00557d",
+    "imageNames": [
+      "f8ca6982d490add16d7afda06e00557d-1746599820013.png"
+    ],
+    "timestamp": "2025-05-07T06:37:00.013Z",
+    "imageCount": 1
+  },
+  {
+    "companyId": "2",
+    "companyName": "Яндекс Маркет",
+    "placement": "top",
+    "app": "app1",
+    "hideable": "false",
+    "link": "ccfzxvzvcxvcxvxv",
+    "period": "1week",
+    "impressions": "5000",
+    "userImpressions": "3",
+    "showTime": "day",
+    "geoTargeting": "asia",
+    "username": "76",
+    "id": "fa01d81a522b56832516ec9e6d5003aa",
+    "imageNames": [
+      "fa01d81a522b56832516ec9e6d5003aa-1746599933341.png"
+    ],
+    "timestamp": "2025-05-07T06:38:53.341Z",
+    "imageCount": 1
   }
 ]

@@ -10,20 +10,26 @@ import { AuthGuard } from '@nestjs/passport';
 @Controller('api')
 export class BannersController {
     constructor(private readonly bannersService: BannersService) {}
+
     @Get('user-banners')
     async getUserBanners(@Req() req: Request) {
-        if (!req.session.user) {
-            throw new UnauthorizedException('Требуется авторизация');
-        }
-        try {
-            return await this.bannersService.getUserBanners(req);
-        } catch (error) {
-            if (error instanceof HttpException) {
-                throw error;
-            }
-            throw new HttpException('Ошибка получения баннеров', HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+      console.log('Full session:', req.session);
+      
+      const userIdentifier = req.session.user?.id || req.session.user?.username;
+      
+      if (!userIdentifier) {
+        console.error('No user identifier in session!');
+        throw new UnauthorizedException('Требуется авторизация');
+      }
+    
+      try {
+        return await this.bannersService.getUserBanners(userIdentifier);
+      } catch (error) {
+        console.error('Error fetching banners:', error);
+        throw new HttpException('Ошибка получения баннеров', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
     }
+
     @Post('save-banner') 
     @UseInterceptors(FilesInterceptor('images', 5))
     async saveBanner(

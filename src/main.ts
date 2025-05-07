@@ -9,12 +9,13 @@ import * as express from 'express';
 
 const PORT = 3000;
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  const app = await NestFactory.create(AppModule);
 
   app.enableCors({
     origin: 'http://localhost:3001', 
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
+    allowedHeaders: 'Content-Type,Authorization'
   });
 
   app.use(express.json());
@@ -26,9 +27,9 @@ async function bootstrap() {
       resave: false,
       saveUninitialized: false,
       cookie: {
-        maxAge: 60000,
+        maxAge: 30 * 60 * 1000,
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production'
+        secure: false
       },
     }),
   );
@@ -36,9 +37,11 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  /*
   app.useStaticAssets(join(process.cwd(), 'images'),{
     prefix: '/images',
   })
+*/
 
   await app.listen(PORT);
   console.log(`Сервер запущен на http://localhost:${PORT}`);

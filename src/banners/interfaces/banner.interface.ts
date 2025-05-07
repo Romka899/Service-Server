@@ -15,4 +15,5 @@ export interface BannerData {
     timestamp?: string;
     userId: string;
     companyId: number;
-}
+    companyName:string;
+};

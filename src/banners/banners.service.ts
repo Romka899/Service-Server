@@ -74,9 +74,10 @@ export class BannersService {
                 id: bannerId,
                 userId: user.id,
                 companyId: bannerData.companyId,
+                companyName: bannerData.companyName,
                 imageNames,
                 timestamp,
-                imageCount: imageNames.length
+                imageCount: imageNames.length,
             };
 
             const filePath = this.getAppFilePath(fullBannerData.app);
@@ -97,8 +98,8 @@ export class BannersService {
         }
     }
 
-    async getUserBanners(req: Request): Promise<BannerData[]> {
-        const user = req.session.user;
+    async getUserBanners(userId: string): Promise<BannerData[]> {
+        const user = userId;
         if (!user) {
             throw new HttpException('Пользователь не авторизован', HttpStatus.UNAUTHORIZED);
         }
@@ -111,12 +112,12 @@ export class BannersService {
             
             if (fs.existsSync(app1Path)) {
                 const app1Banners = JSON.parse(fs.readFileSync(app1Path, 'utf8'));
-                userBanners.push(...app1Banners.filter(b => b.userId === user.id));
+                userBanners.push(...app1Banners.filter(b => b.userId === userId || b.username === userId));
             }
             
             if (fs.existsSync(app2Path)) {
                 const app2Banners = JSON.parse(fs.readFileSync(app2Path, 'utf8'));
-                userBanners.push(...app2Banners.filter(b => b.userId === user.id));
+                userBanners.push(...app2Banners.filter(b => b.userId === userId || b.username === userId));
             }
 
             return userBanners;
@@ -124,4 +125,6 @@ export class BannersService {
             throw new HttpException('Ошибка получения баннеров', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    
 }

@@ -1,7 +1,8 @@
-import { Controller, Post, Body, Req, HttpException, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, Req, HttpException, UnauthorizedException, HttpStatus, Res } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { SessionUser, AuthResponse } from './interfaces/auth.interface';
+import * as cookieParser from 'cookie-parser';
 
 @Controller('api') 
 export class AuthController {
@@ -10,13 +11,18 @@ export class AuthController {
   @Post('register')
   async register(@Body() body: { username: string; password: string }) {
     try {
+      const existingUser = await this.authService.findUser(body.username);
+      if (existingUser) {
+        throw new HttpException('Пользователь уже существует', HttpStatus.BAD_REQUEST);
+      }
+  
       const result = await this.authService.register(body.username, body.password);
-      return { 
+      return {
         status: 'success',
         user: JSON.parse(result)
       };
     } catch (error) {
-      throw new HttpException(error.message, 500);
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -30,15 +36,33 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout(@Req() req: Request) {
+  async logout(@Req() req: Request, @Res() res: Response) {
     try {
-      const result = await this.authService.logout(req);
-      return { message: result };
+      await new Promise<void>((resolve, reject) => {
+        req.session.destroy(err => {
+          if (err) {
+            console.error('Ошибка удаления сессии:', err);
+            reject(new HttpException('Ошибка выхода', HttpStatus.INTERNAL_SERVER_ERROR));
+          } else {
+            resolve();
+          }
+        });
+      });
+  
+      res.clearCookie('connect.sid', { 
+        path: '/',
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax' 
+      });
+  
+      return res.status(200).json({ 
+        status: 'success',
+        message: 'Сессия завершена' 
+      });
     } catch (error) {
-      if (error instanceof HttpException) {
-        throw error;
-      }
-      throw new HttpException('Ошибка сервера', 500);
+      console.error('Ошибка в logout:', error);
+      throw new HttpException('Ошибка выхода', HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 
@@ -61,7 +85,4 @@ export class AuthController {
 
     return{message: 'Сессия инициализирована'}
   }
-
-
-  
 }
