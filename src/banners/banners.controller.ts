@@ -1,9 +1,9 @@
-import { Controller, Post, Get, Body, UseInterceptors,  UploadedFiles, Req, HttpException, HttpStatus, UseGuards, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Get, Body, UseInterceptors,  UploadedFiles, Req, HttpException, HttpStatus, UseGuards, UnauthorizedException, Delete, Param } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { BannersService } from './banners.service';
 import { BannerData } from './interfaces/banner.interface';
 import { Request } from 'express';
-import { AuthGuard } from '@nestjs/passport';
+//import { AuthGuard } from '@nestjs/passport';
 
 
 
@@ -64,5 +64,49 @@ export class BannersController {
             }
             throw new HttpException('Ошибка сохранения баннера', HttpStatus.BAD_REQUEST);
           }
+    }
+
+    @Delete('banners/:id')
+    async deleteBanner(
+      @Param('id') id: string,
+      @Req() req:Request
+    ){
+      if(!req.session.user){
+        throw new UnauthorizedException('Требуется авторизация');
+      }
+      try{
+        const deleteBanner = await this.bannersService.deleteBanner(id);
+        return {status: 'success', deleted: deleteBanner};
+      }catch(error){
+        throw new HttpException('Ошибка удаления', HttpStatus.INTERNAL_SERVER_ERROR);
+      }
+    }
+
+    @Post('toggle-banners')
+    async toggleBanners(
+        @Body() body: { bannerIds: string[], isActive: boolean },
+        @Req() req: Request
+    ) {
+        if (!req.session.user) {
+            throw new UnauthorizedException('Требуется авторизация');
+        }
+        
+        try {
+            const updatedCount = await this.bannersService.toggleBannersActivation(
+                body.bannerIds,
+                body.isActive
+            );
+            
+            return { 
+                status: 'success',
+                message: `Статус ${updatedCount} баннеров успешно изменен`,
+                updatedCount
+            };
+        } catch (error) {
+            throw new HttpException(
+                'Ошибка изменения статуса баннеров', 
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
     }
 }

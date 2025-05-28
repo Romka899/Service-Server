@@ -1,5 +1,6 @@
 export interface BannerData {
-    id?: string;
+    id: string;
+    bannerName?: string;
     placement: string;
     app: 'app1' | 'app2';
     hideable: boolean;
@@ -12,8 +13,10 @@ export interface BannerData {
     imageCount?: number;
     imageNames?: string[];
     username: string;
+    //number: string;
     timestamp?: string;
     userId: string;
     companyId: number;
     companyName:string;
+    isActive?: boolean;
 };

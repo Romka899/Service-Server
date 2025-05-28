@@ -34,27 +34,54 @@ export class AuthService {
     });
 }
 
-async register(username: string, password: string): Promise<string> {
+
+async register(username: string, password: string): Promise<any> {
   return new Promise((resolve, reject) => {
+    console.log(`Registering user: ${username}`);
+    
     if (!username || !password) {
+      console.log('Username or password missing');
       return reject(new Error('Имя пользователя и пароль обязательны'));
     }
 
-    const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
-    const newUser = {
-      username,
-      password: hashedPassword,
-      role: 'user',
-      id: crypto.randomBytes(16).toString('hex'),
-      createdAt: new Date().toISOString()
-    };
+    this.findUser(username)
+      .then(existingUser => {
+        if (existingUser) {
+          console.log('User already exists:', username);
+          return reject(new Error('Пользователь уже существует'));
+        }
 
-    this.db.insert(newUser, (err) => {
-      if (err) return reject(new Error('Ошибка базы данных'));
-      resolve(JSON.stringify(newUser));
-    });
+        const hashedPassword = crypto.createHash('sha256').update(password).digest('hex');
+        const newUser = {
+          username,
+          password: hashedPassword,
+          role: 'user',
+          id: crypto.randomBytes(16).toString('hex'),
+          createdAt: new Date().toISOString()
+        };
+
+        console.log('Creating new user:', newUser);
+        
+        this.db.insert(newUser, (err) => {
+          if (err) {
+            console.error('Database insert error:', err);
+            return reject(new Error('Ошибка при создании пользователя'));
+          }
+          console.log('User created successfully:', username);
+          resolve({
+            status: 'success',
+            user: newUser
+          });
+        });
+      })
+      .catch(err => {
+        console.error('Error in findUser:', err);
+        reject(err);
+      });
   });
 }
+  
+
 
 async login(username: string, password: string, req: Request): Promise<AuthResponse> {
   const users = await new Promise<any[]>((resolve, reject) => {

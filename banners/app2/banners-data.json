@@ -115,5 +115,23 @@
     "imageNames": [],
     "timestamp": "2025-05-07T04:09:21.813Z",
     "imageCount": 0
+  },
+  {
+    "companyId": "1",
+    "companyName": "Своя Компания",
+    "placement": "",
+    "app": "app2",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "76",
+    "id": "bf616c3cdeb1ace7e76916f4b52938c2",
+    "imageNames": [],
+    "timestamp": "2025-05-13T05:27:41.066Z",
+    "imageCount": 0
   }
 ]

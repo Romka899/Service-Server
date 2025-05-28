@@ -13,9 +13,9 @@ async function bootstrap() {
 
   app.enableCors({
     origin: 'http://localhost:3001', 
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'],
     credentials: true,
-    allowedHeaders: 'Content-Type,Authorization'
+    allowedHeaders: ['Content-Type','Authorization']  
   });
 
   app.use(express.json());

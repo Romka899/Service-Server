@@ -4,6 +4,7 @@ import * as fs from 'fs';
 import * as crypto from 'crypto';
 import { BannerData } from './interfaces/banner.interface';
 import { Request } from 'express';
+import { count } from 'console';
 
 @Injectable()
 export class BannersService {
@@ -77,6 +78,8 @@ export class BannersService {
                 companyName: bannerData.companyName,
                 imageNames,
                 timestamp,
+                showTime: bannerData.showTime,
+                period: bannerData.period,
                 imageCount: imageNames.length,
             };
 
@@ -126,5 +129,96 @@ export class BannersService {
         }
     }
 
+    async deleteBanner(bannerId: string): Promise<BannerData> {
+        try {
+            const app1Path = this.getAppFilePath('app1');
+            const app2Path = this.getAppFilePath('app2');
     
+            let deletedBanner: BannerData | null = null;
+    
+            const processFile = (filePath: string): boolean => {
+                if (!fs.existsSync(filePath)) return false;
+    
+                const banners: BannerData[] = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                const bannerToDelete = banners.find((b) => b.id === bannerId);
+    
+                if (!bannerToDelete) return false;
+    
+                deletedBanner = bannerToDelete;
+                const updatedBanners = banners.filter((b) => b.id !== bannerId);
+                fs.writeFileSync(filePath, JSON.stringify(updatedBanners, null, 2));
+                return true;
+            };
+    
+            const isDeleted = processFile(app1Path) || processFile(app2Path);
+    
+            if (!isDeleted || !deletedBanner) {
+                throw new HttpException('Баннер не найден', HttpStatus.NOT_FOUND);
+            }
+    
+            /*
+            if (deletedBanner.imageNames && deletedBanner.imageNames.length > 0) {
+                deletedBanner.imageNames.forEach((imgName) => {
+                    try {
+                        const imagePath = path.join(this.baseImagesPath, imgName);
+                        if (fs.existsSync(imagePath)) {
+                            fs.unlinkSync(imagePath);
+                        }
+                    } catch (err) {
+                        console.error('Ошибка удаления изображения:', imgName, err);
+                    }
+                });
+            }
+            */
+            return deletedBanner;
+        } catch (error) {
+            console.error('Ошибка при удалении баннера:', error);
+            throw new HttpException(
+                'Не удалось удалить баннер', 
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
+    async toggleBannersActivation(bannerIds: string[], isActive: boolean): Promise<number> {
+        try {
+            const app1Path = this.getAppFilePath('app1');
+            const app2Path = this.getAppFilePath('app2');
+            
+            let updatedCount = 0;
+
+            const processFile = (filePath: string): number => {
+                if (!fs.existsSync(filePath)) return 0;
+
+                const banners: BannerData[] = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+                let count = 0;
+
+                const updatedBanners = banners.map(banner => {
+                    if (bannerIds.includes(banner.id)) {
+                        count++;
+                        return { ...banner, isActive };
+                    }
+                    return banner;
+                });
+
+                if (count > 0) {
+                    fs.writeFileSync(filePath, JSON.stringify(updatedBanners, null, 2));
+                }
+
+                return count;
+            };
+
+            updatedCount += processFile(app1Path);
+            updatedCount += processFile(app2Path);
+
+            return updatedCount;
+        } catch (error) {
+            console.error('Ошибка при изменении статуса баннеров:', error);
+            throw new HttpException(
+                'Не удалось изменить статус баннеров', 
+                HttpStatus.INTERNAL_SERVER_ERROR
+            );
+        }
+    }
 }
+    
+    

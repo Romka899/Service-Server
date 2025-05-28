@@ -116,5 +116,42 @@
     "imageNames": [],
     "timestamp": "2025-05-07T03:32:57.241Z",
     "imageCount": 0
+  },
+  {
+    "companyId": "1",
+    "companyName": "Своя Компания",
+    "placement": "",
+    "app": "",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "76",
+    "id": "f06f1a73b2a52b4d9bd697fbd0f91d9e",
+    "imageNames": [],
+    "timestamp": "2025-05-13T05:27:22.383Z",
+    "imageCount": 0
+  },
+  {
+    "bannerName": "Реклама ",
+    "companyId": "1",
+    "companyName": "Своя Компания",
+    "placement": "",
+    "app": "",
+    "hideable": "false",
+    "link": "",
+    "period": "",
+    "impressions": "",
+    "userImpressions": "",
+    "showTime": "",
+    "geoTargeting": "",
+    "username": "Romka Valeev",
+    "id": "6e1b219c4e29f0768a7ee94c587c9fb0",
+    "imageNames": [],
+    "timestamp": "2025-05-20T05:05:22.404Z",
+    "imageCount": 0
   }
 ]

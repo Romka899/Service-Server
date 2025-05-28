@@ -9,25 +9,33 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  async register(@Body() body: { username: string; password: string }) {
+  async register(@Body() body: { username: string; password: string }, @Res() res: Response) {
+    console.log('Registration request:', body);
+    
     try {
-      const existingUser = await this.authService.findUser(body.username);
-      if (existingUser) {
-        throw new HttpException('Пользователь уже существует', HttpStatus.BAD_REQUEST);
-      }
-  
       const result = await this.authService.register(body.username, body.password);
-      return {
+      console.log('Registration successful:', result);
+      
+      return res.status(HttpStatus.CREATED).json({
         status: 'success',
-        user: JSON.parse(result)
-      };
+        user: result.user
+      });
     } catch (error) {
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      console.error('Registration error:', error.message);
+      
+      const status = error.message.includes('уже существует') 
+        ? HttpStatus.BAD_REQUEST 
+        : HttpStatus.INTERNAL_SERVER_ERROR;
+      
+      return res.status(status).json({
+        status: 'error',
+        message: error.message
+      });
     }
   }
 
 
-  @Post('authorization')
+  @Post('authorisation')
   async login(
     @Body() body: { username: string; password: string }, 
     @Req() req: Request) {
