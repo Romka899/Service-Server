@@ -12,6 +12,7 @@ export interface BannerData {
     geoTargeting: string;
     imageCount?: number;
     imageNames?: string[];
+    replaceImages?: string[];
     username: string;
     //number: string;
     timestamp?: string;

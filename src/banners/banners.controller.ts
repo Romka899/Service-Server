@@ -1,4 +1,4 @@
-import { Controller, Post, Get, Body, UseInterceptors,  UploadedFiles, Req, HttpException, HttpStatus, UseGuards, UnauthorizedException, Delete, Param } from '@nestjs/common';
+import { Controller, Post, Put, Get, Body, UseInterceptors,  UploadedFiles, Req, HttpException, HttpStatus, UseGuards, UnauthorizedException, Delete, Param } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { BannersService } from './banners.service';
 import { BannerData } from './interfaces/banner.interface';
@@ -15,8 +15,10 @@ export class BannersController {
     async getUserBanners(@Req() req: Request) {
       console.log('Full session:', req.session);
       
-      const userIdentifier = req.session.user?.id || req.session.user?.username;
+      //const userIdentifier = 'Roman Valeev';
       
+      const userIdentifier = req.session.user?.id || req.session.user?.username;
+
       if (!userIdentifier) {
         console.error('No user identifier in session!');
         throw new UnauthorizedException('Требуется авторизация');
@@ -31,7 +33,18 @@ export class BannersController {
     }
 
     @Post('save-banner') 
-    @UseInterceptors(FilesInterceptor('images', 5))
+    @UseInterceptors(FilesInterceptor('images', 5/*, {
+      limits: {
+        fileSize: 5 * 1024 * 1024,
+        files: 5,
+      },
+      fileFilter: (req, file, cb) =>{
+        if(!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)){
+          return cb(new Error('Допустимы только изображения!'), false);
+        }
+        cb(null, true);
+      },
+    }*/))
     async saveBanner(
         @Req() req:Request,
         @Body() body: BannerData,
@@ -107,6 +120,39 @@ export class BannersController {
                 'Ошибка изменения статуса баннеров', 
                 HttpStatus.INTERNAL_SERVER_ERROR
             );
+        }
+    }
+
+    @Put('banners/:id')
+    @UseInterceptors(FilesInterceptor('images', 5))
+    async updateBanner(
+        @Param('id') id: string,
+        @Body() body: Partial<BannerData>,
+        @UploadedFiles() images: Express.Multer.File[],
+        @Req() req: Request
+    ) {
+        if (!req.session.user) {
+            throw new UnauthorizedException('Требуется авторизация');
+        }
+
+        try {
+            const updatedBanner = await this.bannersService.updateBanner(
+                id,
+                body,
+                images,
+                req
+            );
+            return {
+                status: 'success',
+                message: 'Баннер успешно обновлен',
+                data: updatedBanner,
+                imageUrls: updatedBanner.imageNames?.map(name => `/images/${name}`)
+            };
+        } catch (error) {
+            if (error instanceof HttpException) {
+                throw error;
+            }
+            throw new HttpException('Ошибка обновления баннера', HttpStatus.BAD_REQUEST);
         }
     }
 }

@@ -93,11 +93,70 @@ export class BannersService {
 
             return fullBannerData;
         } catch (error) {
-
             imageNames.forEach(name => {
                 try { fs.unlinkSync(path.join(this.baseImagesPath, name)); } catch {}
             });
             throw new HttpException('Ошибка сохранения баннера', HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    async updateBanner(
+        bannerId: string,
+        updateData: Partial<BannerData>,
+        newImages: Express.Multer.File[],
+        req: Request
+    ): Promise<BannerData> {
+        const user = req.session.user;
+        if (!user) {
+            throw new HttpException('Пользователь не авторизован', HttpStatus.UNAUTHORIZED);
+        }
+    
+        const filePath = this.getAppFilePath(updateData.app || 'app1' || 'app2');
+        if (!fs.existsSync(filePath)) {
+            throw new HttpException('Баннер не найден', HttpStatus.NOT_FOUND);
+        }
+    
+        let banners: BannerData[] = JSON.parse(fs.readFileSync(filePath, 'utf8'));
+        const bannerIndex = banners.findIndex(b => b.id === bannerId);
+    
+        if (bannerIndex === -1) {
+            throw new HttpException('Баннер не найден', HttpStatus.NOT_FOUND);
+        }
+    
+        const oldBanner = banners[bannerIndex];
+        let imageNames = oldBanner.imageNames || [];
+    
+        try {
+            if (newImages?.length) {
+                if (updateData.replaceImages) {
+                    imageNames.forEach(name => {
+                        try {
+                            fs.unlinkSync(path.join(this.baseImagesPath, name));
+                        } catch (err) {
+                            console.error('Ошибка удаления старого изображения:', err);
+                        }
+                    });
+                    imageNames = [];
+                }
+    
+                const newImageNames = await this.saveImages(newImages, bannerId);
+                imageNames = [...imageNames, ...newImageNames];
+            }
+    
+            const updatedBanner: BannerData = {
+                ...oldBanner,
+                ...updateData,
+                imageNames,
+                imageCount: imageNames.length,
+                timestamp: new Date().toISOString()
+            };
+    
+            banners[bannerIndex] = updatedBanner;
+            fs.writeFileSync(filePath, JSON.stringify(banners, null, 2));
+    
+            return updatedBanner;
+        } catch (error) {
+            throw new HttpException('Ошибка обновления баннера', HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -170,6 +229,7 @@ export class BannersService {
                 });
             }
             */
+           
             return deletedBanner;
         } catch (error) {
             console.error('Ошибка при удалении баннера:', error);

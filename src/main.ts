@@ -9,13 +9,13 @@ import * as express from 'express';
 
 const PORT = 3000;
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
-
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+  
   app.enableCors({
-    origin: 'http://localhost:3001', 
-    methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'],
-    credentials: true,
-    allowedHeaders: ['Content-Type','Authorization']  
+     origin: true, 
+     methods: ['GET','HEAD','PUT','PATCH','POST','DELETE'],
+     credentials: true,
+     allowedHeaders: ['Content-Type','Authorization']  
   });
 
   app.use(express.json());
@@ -37,13 +37,10 @@ async function bootstrap() {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  /*
-  app.useStaticAssets(join(process.cwd(), 'images'),{
-    prefix: '/images',
-  })
-*/
+  app.use('/images', express.static(join(__dirname, '..', 'images')));
 
   await app.listen(PORT);
   console.log(`Сервер запущен на http://localhost:${PORT}`);
+  //console.log(`Изображения доступны по: http://localhost:${PORT}/images/filename.jpg`);
 }
 bootstrap();

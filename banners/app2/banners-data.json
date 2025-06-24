@@ -1,104 +1,6 @@
 [
   {
-    "placement": "middle",
-    "app": "app2",
-    "hideable": false,
-    "link": "",
-    "period": "2weeks",
-    "impressions": "10000",
-    "userImpressions": "3",
-    "showTime": "all",
-    "geoTargeting": "europe",
-    "imageCount": 0,
-    "username": "1",
-    "timestamp": "2025-04-17T06:25:06.884Z"
-  },
-  {
-    "placement": "",
-    "app": "app2",
-    "hideable": "false",
-    "link": "",
-    "period": "",
-    "impressions": "",
-    "userImpressions": "",
-    "showTime": "",
-    "geoTargeting": "",
-    "username": "1",
-    "id": "2d0a7c6686f983f7f75b42430b87d298",
-    "imageNames": [],
-    "timestamp": "2025-04-22T06:53:50.397Z",
-    "imageCount": 0
-  },
-  {
-    "placement": "",
-    "app": "app2",
-    "hideable": "false",
-    "link": "",
-    "period": "",
-    "impressions": "",
-    "userImpressions": "",
-    "showTime": "",
-    "geoTargeting": "",
-    "username": "1",
-    "id": "911c19dfb1325b154d26eb70b46c9ed0",
-    "imageNames": [
-      "911c19dfb1325b154d26eb70b46c9ed0-1745305150820.png"
-    ],
-    "timestamp": "2025-04-22T06:59:10.820Z",
-    "imageCount": 1
-  },
-  {
-    "placement": "",
-    "app": "app2",
-    "hideable": "false",
-    "link": "",
-    "period": "",
-    "impressions": "",
-    "userImpressions": "",
-    "showTime": "",
-    "geoTargeting": "",
-    "username": "1",
-    "id": "58652475cf57845e5bcba358d44a5bcf",
-    "imageNames": [
-      "58652475cf57845e5bcba358d44a5bcf-1745305180214.png",
-      "58652475cf57845e5bcba358d44a5bcf-1745305180222.jpeg"
-    ],
-    "timestamp": "2025-04-22T06:59:40.214Z",
-    "imageCount": 2
-  },
-  {
-    "placement": "",
-    "app": "app2",
-    "hideable": "false",
-    "link": "",
-    "period": "",
-    "impressions": "",
-    "userImpressions": "",
-    "showTime": "",
-    "geoTargeting": "",
-    "username": "76",
-    "id": "711c3e9dd0127f5ca68cf78ff95dbc3c",
-    "imageNames": [],
-    "timestamp": "2025-04-30T08:47:34.154Z",
-    "imageCount": 0
-  },
-  {
-    "placement": "",
-    "app": "app2",
-    "hideable": "false",
-    "link": "",
-    "period": "",
-    "impressions": "",
-    "userImpressions": "",
-    "showTime": "",
-    "geoTargeting": "",
-    "username": "76",
-    "id": "42235408c8e04cbbcdc5385b2a90e590",
-    "imageNames": [],
-    "timestamp": "2025-04-30T08:47:46.530Z",
-    "imageCount": 0
-  },
-  {
+    "bannerName": "hfffff",
     "companyId": "4",
     "companyName": "OZON",
     "placement": "",
@@ -110,15 +12,16 @@
     "userImpressions": "",
     "showTime": "",
     "geoTargeting": "",
-    "username": "76",
-    "id": "430b0b0377e57c53e7337df66cdb1ba0",
+    "username": "Roman Valeev",
+    "id": "afe619480aa86d5f38690a438da06d23",
     "imageNames": [],
-    "timestamp": "2025-05-07T04:09:21.813Z",
+    "timestamp": "2025-06-10T09:40:21.556Z",
     "imageCount": 0
   },
   {
-    "companyId": "1",
-    "companyName": "Своя Компания",
+    "bannerName": "ddasdasd",
+    "companyId": "2",
+    "companyName": "Яндекс Маркет",
     "placement": "",
     "app": "app2",
     "hideable": "false",
@@ -128,10 +31,12 @@
     "userImpressions": "",
     "showTime": "",
     "geoTargeting": "",
-    "username": "76",
-    "id": "bf616c3cdeb1ace7e76916f4b52938c2",
-    "imageNames": [],
-    "timestamp": "2025-05-13T05:27:41.066Z",
-    "imageCount": 0
+    "username": "Roman Valeev",
+    "id": "7596c7abc36a355cbd5774620444345f",
+    "imageNames": [
+      "7596c7abc36a355cbd5774620444345f-1749548442595.png"
+    ],
+    "timestamp": "2025-06-10T09:40:42.595Z",
+    "imageCount": 1
   }
 ]
