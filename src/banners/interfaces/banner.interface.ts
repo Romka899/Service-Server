@@ -19,5 +19,5 @@ export interface BannerData {
     userId: string;
     companyId: number;
     companyName:string;
-    isActive?: boolean;
+    isActive: boolean;
 };
